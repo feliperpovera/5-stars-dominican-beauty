@@ -360,7 +360,7 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900}}">
 class Component extends DCLogic {
-  state = { scrolled: false, menuOpen: false, submitted: false };
+  state = { scrolled: false, pastHero: false, menuOpen: false, submitted: false };
 
   componentDidMount() {
     // Force the hero video to start immediately and stay playing
@@ -380,6 +380,8 @@ class Component extends DCLogic {
     this._onScroll = () => {
       const s = window.scrollY > 30;
       if (s !== this.state.scrolled) this.setState({ scrolled: s });
+      const ph = window.scrollY > Math.max(360, window.innerHeight * 0.55);
+      if (ph !== this.state.pastHero) this.setState({ pastHero: ph });
     };
     window.addEventListener('scroll', this._onScroll, { passive: true });
 
@@ -484,7 +486,11 @@ class Component extends DCLogic {
       'display:flex;align-items:center;justify-content:center;text-decoration:none',
       'background:linear-gradient(135deg,#f7f7f9,#cfd0d6 50%,#9a9ba3)',
       'box-shadow:0 10px 30px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.8)',
-      'border:1px solid rgba(255,255,255,.4)'
+      'border:1px solid rgba(255,255,255,.4)',
+      'transition:opacity .3s ease, transform .3s ease',
+      this.state.pastHero
+        ? 'opacity:1;transform:translateY(0);pointer-events:auto'
+        : 'opacity:0;transform:translateY(16px);pointer-events:none'
     ].join(';');
 
     return {
